@@ -18,7 +18,7 @@
 
   "notify_osx": false,
   "twilio_account_sid": "AC5bb191ab08405ef59130243c48275223",
-  "twilio_auth_token": "06b32e0e7a393d2e79c53ba1e59d70d7",
+  "twilio_auth_token": "",
   "twilio_from_number": "+18443576123",
   "twilio_to_number": "+19159299139"
 }
