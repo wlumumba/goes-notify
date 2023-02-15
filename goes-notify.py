@@ -2,6 +2,8 @@
 
 # Note: for setting up email with sendmail, see: http://linuxconfig.org/configuring-gmail-as-sendmail-email-relay
 
+### RUN USING python3 /Users/wycliff/Documents/global_entry/goes-notify/goes-notify.py ###
+
 import argparse
 # import commands
 import json
@@ -179,12 +181,13 @@ if __name__ == '__main__':
         stream=sys.stdout,
     )
 
-    pwd = path.dirname(sys.argv[0])
+    #pwd = path.dirname(sys.argv[0])
+    pwd = os.path.abspath(path.dirname(sys.argv[0]))
     
 
     # Parse Arguments
     parser = argparse.ArgumentParser(description="Command line script to check for goes openings.")
-    parser.add_argument('--config', dest='configfile', default='%sconfig.json' % pwd, help='Config file to use (default is config.json)')
+    parser.add_argument('--config', dest='configfile', default='%s/config.json' % pwd, help='Config file to use (default is config.json)')
     arguments = vars(parser.parse_args())
     logging.info("config file is:" + arguments['configfile'])
     # Load Settings
