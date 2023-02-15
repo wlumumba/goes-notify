@@ -134,7 +134,7 @@ def main(settings):
             logging.info('Results are the identical to previous run, and no_spamming is true: do nothing.')
             return
         else:
-            for f in glob.glob("goes-notify_*.txt"):
+            for f in glob.glob("goes-notify_*.log"):
                 os.remove(f)
             f = open(fn,"w")
             f.close()
