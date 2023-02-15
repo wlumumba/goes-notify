@@ -3,7 +3,7 @@
 # Note: for setting up email with sendmail, see: http://linuxconfig.org/configuring-gmail-as-sendmail-email-relay
 
 import argparse
-import commands
+# import commands
 import json
 import logging
 import smtplib
@@ -78,7 +78,8 @@ def notify_send_email(dates, current_apt, settings, use_gmail=False):
         log(e)
 
 def notify_osx(msg):
-    commands.getstatusoutput("osascript -e 'display notification \"%s\" with title \"Global Entry Notifier\"'" % msg)
+    #commands.getstatusoutput("osascript -e 'display notification \"%s\" with title \"Global Entry Notifier\"'" % msg)
+    pass
 
 def notify_sms(settings, dates):
     for avail_apt in dates: 
@@ -127,9 +128,10 @@ def main(settings):
         if not dates:
             return
 
-        hash = hashlib.md5(''.join(dates) + current_apt.strftime('%B %d, %Y @ %I:%M%p')).hexdigest()
+        hash = hashlib.md5((''.join(dates) + current_apt.strftime('%B %d, %Y @ %I:%M%p')).encode('utf-8')).hexdigest()
         fn = "goes-notify_{0}.txt".format(hash)
         if settings.get('no_spamming') and os.path.exists(fn):
+            logging.info('Results are the identical to previous run, and no_spamming is true: do nothing.')
             return
         else:
             for f in glob.glob("goes-notify_*.txt"):
@@ -164,8 +166,8 @@ def _check_settings(config):
     if config.get('no_email') == False and not config.get('email_from'): # email_to is not required; will default to email_from if not set
         raise ValueError('email_to and email_from required for sending email. (Run with --no-email or no_email=True to disable email.)')
 
-    if config.get('use_gmail') and not config.get('gmail_password'):
-        raise ValueError('gmail_password not found in config but is required when running with use_gmail option')
+    # if config.get('use_gmail') and not config.get('gmail_password'):
+    #     raise ValueError('gmail_password not found in config but is required when running with use_gmail option')
 
 if __name__ == '__main__':
 
@@ -178,10 +180,11 @@ if __name__ == '__main__':
     )
 
     pwd = path.dirname(sys.argv[0])
+    
 
     # Parse Arguments
     parser = argparse.ArgumentParser(description="Command line script to check for goes openings.")
-    parser.add_argument('--config', dest='configfile', default='%s/config.json' % pwd, help='Config file to use (default is config.json)')
+    parser.add_argument('--config', dest='configfile', default='%sconfig.json' % pwd, help='Config file to use (default is config.json)')
     arguments = vars(parser.parse_args())
     logging.info("config file is:" + arguments['configfile'])
     # Load Settings
@@ -190,7 +193,7 @@ if __name__ == '__main__':
             settings = json.load(json_file)
 
             # merge args into settings IF they're True
-            for key, val in arguments.iteritems():
+            for key, val in list(arguments.items()):
                 if not arguments.get(key): continue
                 settings[key] = val
 
